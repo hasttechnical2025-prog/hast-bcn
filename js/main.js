@@ -236,7 +236,18 @@ export async function appInit() {
 window.onload = () => {
   appInit();
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js").then(() => console.log("SW registered")).catch(err => console.log("SW Error:", err));
+    navigator.serviceWorker.register("./sw.js").then(reg => {
+      console.log("SW registered");
+      reg.onupdatefound = () => {
+        const installingWorker = reg.installing;
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
+            console.log("New version available, reloading...");
+            setTimeout(() => window.location.reload(), 500);
+          }
+        };
+      };
+    }).catch(err => console.log("SW Error:", err));
   }
 };
 
