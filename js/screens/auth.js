@@ -154,19 +154,25 @@ export async function checkPin(name) {
     return;
   }
   showLD('Đang xác thực...');
-  try {
+    try {
     const hashed = await hashPin(pinBuf, name);
-    if (ktv.pin === hashed) {
+    
+    // Gọi hàm RPC trên Supabase để Database tự kiểm tra, thay vì tự kiểm tra ở Client
+    const { data: isValid, error } = await sb.rpc('verify_ktv_pin', {
+      p_username: name,
+      p_pinhash: hashed
+    });
+
+    if (error) throw error;
+
+    if (isValid === true) {
       hideLD();
-      const lk = getLock(name);
-      lk.attempts = 0;
-      lk.lockedUntil = 0;
-      saveLock(name, lk);
+      const lk = getLock(name); lk.attempts = 0; lk.lockedUntil = 0; saveLock(name, lk);
       S.userPinHash = hashed;
       loginOK(name);
       return;
     }
-  } catch (err) {
+  } catch (err) { ... }
     hideLD();
     toast('Lỗi mã hóa PIN', 'err');
     return;

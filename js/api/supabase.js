@@ -53,9 +53,9 @@ export async function syncAll(silent = false) {
   if (!sb) return;
   setSpin(true);
   try {
-    const { data: ktvs, error: e1 } = await sb.from(TB_KTV).select('ho_ten,pin_hash,ghi_chu').order('ho_ten');
+    const { data: ktvs, error: e1 } = await sb.from(TB_KTV).select('ho_ten,ghi_chu').order('ho_ten');
     if (e1) throw e1;
-    S.ktvList = ktvs.map(k => ({ name: k.ho_ten, pin: k.pin_hash, ghiChu: k.ghi_chu || '' }));
+    S.ktvList = ktvs.map(k => ({ name: k.ho_ten, ghiChu: k.ghi_chu || '' }));
 
     const { data: dm, error: e2 } = await sb.from(TB_DM).select('loai_danh_muc,gia_tri,thu_tu').order('thu_tu', { ascending: true });
     if (e2) throw e2;

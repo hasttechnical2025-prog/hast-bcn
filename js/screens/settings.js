@@ -37,7 +37,7 @@ export function renderSettingsKTV() {
     <div class="info-row">
       <div class="ik">${k.name}${k.ghiChu?.toLowerCase() === 'test' ? ' <span style="font-size:10px;background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:10px;font-weight:700">TEST</span>' : ''}</div>
       <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:10px;color:var(--t3)">Hash: ${k.pin.slice(0, 8)}...</span>
+        <span style="font-size:10px;color:var(--t3)">🔒 Đã mã hóa</span>
         ${k.name !== ADMIN_NAME ? `<button onclick="removeKTV('${k.name}')" style="background:#fef2f2;border:none;border-radius:6px;padding:4px 8px;color:var(--err);cursor:pointer;font-size:12px">Xóa</button>` : ''}
       </div>
     </div>`).join('');
@@ -278,8 +278,7 @@ export async function changePINGeneric(oldId, newId, confId) {
     const hashedOld = await hashPin(oldPin, S.user);
     const hashedNew = await hashPin(newPin, S.user);
 
-    const k = S.ktvList.find(k => k.name === S.user);
-    if (!k || k.pin !== hashedOld) {
+    if (S.userPinHash !== hashedOld) {
       hideLD();
       toast('PIN hiện tại không đúng', 'err');
       return;
@@ -289,7 +288,6 @@ export async function changePINGeneric(oldId, newId, confId) {
     if (error) throw error;
     if (!data || data.length === 0) throw new Error('Không có quyền đổi mật khẩu. RLS đã chặn.');
 
-    k.pin = hashedNew;
     S.userPinHash = hashedNew;
     initSupabase(S.user, S.userPinHash);
 
