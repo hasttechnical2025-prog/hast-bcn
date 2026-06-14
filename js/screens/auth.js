@@ -174,7 +174,9 @@ export async function checkPin(name) {
     }
   } catch (err) {
     hideLD();
-    toast('Lỗi xác thực', 'err');
+    window.loginError = err.message || err;
+    console.error(err);
+    toast('Lỗi xác thực: ' + (err.message || err), 'err');
     return;
   }
   hideLD();
