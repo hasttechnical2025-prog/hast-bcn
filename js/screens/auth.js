@@ -1,4 +1,4 @@
-import { S, getRole, ROLE_ADMIN, ROLE_BOSS, ROLE_KTV } from '../store/state.js';
+import { S, sb, getRole, ROLE_ADMIN, ROLE_BOSS, ROLE_KTV } from '../store/state.js';
 import { hashPin } from '../utils/crypto.js';
 import { showLD, hideLD, toast } from '../utils/ui.js';
 import { ADMIN_NAME, BOSS_NAME, SUPABASE_URL } from '../config.js';
