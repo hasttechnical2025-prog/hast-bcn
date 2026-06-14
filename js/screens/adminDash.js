@@ -33,20 +33,102 @@ export function renderAllMissingWorkdays(containerId) {
   </div>`;
 }
 
+export function getPendingTasksSinceStartOfYear() {
+  const currentYear = new Date().getFullYear();
+  const startOfYear = `${currentYear}-01-01`;
+
+  const yearlyRecords = S.records.filter(r => normDate(r.ngay) >= startOfYear);
+
+  const allTasks = [];
+  yearlyRecords.forEach(r => {
+    (r.chiTiet || []).forEach(cv => {
+      allTasks.push({
+        bcnId: r.id,
+        so: r.so,
+        ngay: normDate(r.ngay),
+        ktv: r.ktv,
+        ...cv
+      });
+    });
+  });
+
+  const taskMap = {};
+  allTasks.forEach(task => {
+    const kh = task.khachHang;
+    if (!taskMap[kh]) {
+      taskMap[kh] = [];
+    }
+    taskMap[kh].push(task);
+  });
+
+  const pendingTasks = [];
+
+  Object.keys(taskMap).forEach(kh => {
+    const sorted = taskMap[kh].sort((a, b) => b.ngay.localeCompare(a.ngay));
+    const latestTask = sorted[0];
+
+    if (latestTask.ketQua !== 'Hoàn thành') {
+      pendingTasks.push(latestTask);
+    }
+  });
+
+  return pendingTasks;
+}
+
+export function showPendingTasks() {
+  const list = getPendingTasksSinceStartOfYear();
+  const container = document.getElementById('pendingTasksList');
+  if (!container) return;
+
+  if (list.length === 0) {
+    container.innerHTML = '<div style="color:var(--t3);text-align:center;padding:16px">Không có công việc chưa xong từ đầu năm</div>';
+  } else {
+    list.sort((a, b) => b.ngay.localeCompare(a.ngay));
+
+    container.innerHTML = list.map(cv => {
+      const viewTarget = S.role === 'admin' ? 'admin-detail' : 'admin-detail';
+      return `<div class="cvi" style="cursor:pointer" onclick="closePendingTasksModal(); window.viewBCN('${cv.bcnId}', '${viewTarget}')">
+        <div class="cvi-hd">
+          <div>
+            <div class="cvi-title">${cv.khachHang.split('@')[0].trim()}</div>
+            <div class="cvi-meta">${cv.loaiViec}${cv.model ? ' · ' + cv.model : ''}</div>
+          </div>
+          <span class="badge" style="background:#fff7ed;color:#ea580c;border:1px solid #fed7aa">${cv.ketQua}</span>
+        </div>
+        <div class="cv-tags" style="margin-top:6px;font-size:12px;color:var(--t2)">
+          <span>KTV: <b>${cv.ktv}</b></span> ·
+          <span>Ngày: <b>${fmtMissDay(cv.ngay)}</b></span>
+          ${cv.ghiChu ? ` · <span class="tag tg">📝 ${cv.ghiChu}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const modal = document.getElementById('modalPendingTasks');
+  if (modal) modal.classList.add('open');
+}
+
+export function closePendingTasksModal() {
+  const modal = document.getElementById('modalPendingTasks');
+  if (modal) modal.classList.remove('open');
+}
+
 export function refreshAdminDash() {
   const now = new Date();
   const mStr = now.getFullYear() + '-' + (now.getMonth() + 1).toString().padStart(2, '0');
   const all = S.records;
   const mRecs = all.filter(r => normDate(r.ngay).startsWith(mStr));
 
-  let totalCV = 0, doneCV = 0, pendCV = 0;
+  let totalCV = 0, doneCV = 0;
   all.forEach(r => {
     (r.chiTiet || []).forEach(c => {
       totalCV++;
       if (c.ketQua === 'Hoàn thành') doneCV++;
-      else pendCV++;
     });
   });
+
+  const pendingTasks = getPendingTasksSinceStartOfYear();
+  const pendCV = pendingTasks.length;
 
   const adTotal = document.getElementById('adTotal');
   const adDone = document.getElementById('adDone');
@@ -92,3 +174,8 @@ export function refreshAdminDash() {
       : emptyH('Không có hoạt động hôm nay', '');
   }
 }
+
+// Bind to window for HTML inline event listeners
+window.showPendingTasks = showPendingTasks;
+window.closePendingTasksModal = closePendingTasksModal;
+

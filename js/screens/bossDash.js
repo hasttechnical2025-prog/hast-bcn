@@ -1,6 +1,6 @@
 import { S } from '../store/state.js';
 import { dateStr, normDate, fmt } from '../utils/date.js';
-import { renderAllMissingWorkdays } from './adminDash.js';
+import { renderAllMissingWorkdays, getPendingTasksSinceStartOfYear } from './adminDash.js';
 import { bcnHTML } from '../main.js';
 import { emptyH } from '../utils/ui.js';
 
@@ -10,14 +10,16 @@ export function refreshBossDash() {
   const all = S.records;
   const mRecs = all.filter(r => normDate(r.ngay).startsWith(mStr));
 
-  let totalCV = 0, doneCV = 0, pendCV = 0;
+  let totalCV = 0, doneCV = 0;
   all.forEach(r => {
     (r.chiTiet || []).forEach(c => {
       totalCV++;
       if (c.ketQua === 'Hoàn thành') doneCV++;
-      else pendCV++;
     });
   });
+
+  const pendingTasks = getPendingTasksSinceStartOfYear();
+  const pendCV = pendingTasks.length;
 
   const bTotal = document.getElementById('bTotal');
   const bDone = document.getElementById('bDone');

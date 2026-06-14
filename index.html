@@ -188,7 +188,7 @@
       <div class="stat-grid col3">
         <div class="stat-card"><div class="stat-n purple" id="adTotal">0</div><div class="stat-l">Tổng BCN</div></div>
         <div class="stat-card"><div class="stat-n green" id="adDone">0</div><div class="stat-l">Hoàn thành</div></div>
-        <div class="stat-card"><div class="stat-n orange" id="adPending">0</div><div class="stat-l">Chưa xong</div></div>
+        <div class="stat-card" style="cursor:pointer" onclick="showPendingTasks()"><div class="stat-n orange" id="adPending">0</div><div class="stat-l">Chưa xong</div></div>
       </div>
       <div class="card">
         <div class="ct"><span class="ct-dot" style="background:#7c3aed"></span>BCN theo KTV (tháng này)</div>
@@ -231,7 +231,7 @@
       <div class="stat-grid col3">
         <div class="stat-card"><div class="stat-n" style="color:#0f766e" id="bTotal">0</div><div class="stat-l">Tổng BCN</div></div>
         <div class="stat-card"><div class="stat-n green" id="bDone">0</div><div class="stat-l">Hoàn thành</div></div>
-        <div class="stat-card"><div class="stat-n orange" id="bPending">0</div><div class="stat-l">Chưa xong</div></div>
+        <div class="stat-card" style="cursor:pointer" onclick="showPendingTasks()"><div class="stat-n orange" id="bPending">0</div><div class="stat-l">Chưa xong</div></div>
       </div>
       <div class="card">
         <div class="ct"><span class="ct-dot" style="background:#0f766e"></span>BCN theo KTV (tháng này)</div>
@@ -444,6 +444,16 @@
 
 <div class="ldov" id="ldov"><div class="spinner"></div><div class="ldtxt" id="ldtxt">Đang xử lý...</div></div>
 <div class="toast" id="toast"></div>
+
+<!-- MODAL DANH SÁCH CHƯA HT -->
+<div class="mover" id="modalPendingTasks">
+  <div class="msheet" style="max-height:85vh">
+    <div class="mhandle"></div>
+    <div class="mtitle">Việc chưa xong (Từ đầu năm)</div>
+    <div id="pendingTasksList" style="max-height:60vh;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:10px"></div>
+    <button class="btn btn-s" onclick="closePendingTasksModal()">Đóng</button>
+  </div>
+</div>
 
     <script>window.addEventListener("error", e => window.bootError = e.message + " at " + e.filename + ":" + e.lineno);</script><script type="module" src="js/main.js"></script>
 </body>

@@ -98,8 +98,13 @@ export function openCVModal(idx) {
   ['cv_loaiViec', 'cv_ketQua'].forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.value = '';
-      el.classList.add('empty');
+      if (id === 'cv_ketQua' && idx < 0) {
+        el.value = 'Hoàn thành';
+        el.classList.remove('empty');
+      } else {
+        el.value = '';
+        el.classList.add('empty');
+      }
     }
   });
 

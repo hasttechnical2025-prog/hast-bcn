@@ -172,9 +172,9 @@ export async function checkPin(name) {
       loginOK(name);
       return;
     }
-  } catch (err) { ... }
+  } catch (err) {
     hideLD();
-    toast('Lỗi mã hóa PIN', 'err');
+    toast('Lỗi xác thực', 'err');
     return;
   }
   hideLD();
