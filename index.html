@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a56db">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BCN App">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>Báo Cáo Ngày</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layouts.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="logo-container" style="display:flex;justify-content:center;width:290px;margin-bottom:20px">
+      <img src="./logo.png" alt="HSTC GROUP" style="width:100%;height:auto;display:block;object-fit:contain">
+    </div>
+    <div class="ltitle">Báo Cáo Ngày</div>
+    <div class="lsub">Hệ thống báo cáo công việc<br>kỹ thuật viên</div>
+    <div class="lcard">
+      <div style="display:flex;gap:0;margin-bottom:16px;border:1.5px solid var(--bdr);border-radius:var(--rs);overflow:hidden">
+        <button id="tabKTV" onclick="switchLoginTab('ktv')"
+          style="flex:1;padding:10px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;background:var(--p);color:#fff;transition:.2s">
+          Kỹ thuật viên
+        </button>
+        <button id="tabMgr" onclick="switchLoginTab('mgr')"
+          style="flex:1;padding:10px;border:none;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--sur2);color:var(--t2);transition:.2s">
+          Quản lý
+        </button>
+      </div>
+      <div id="loginTabKTV">
+        <div class="fg">
+          <label class="fl">Chọn KTV</label>
+          <select class="fsel" id="loginKTV" onchange="onSelectKTV(this.value)">
+            <option value="">-- Chọn họ tên --</option>
+          </select>
+        </div>
+      </div>
+      <div id="loginTabMgr" style="display:none">
+        <div class="fg">
+          <label class="fl">Tên đăng nhập</label>
+          <input type="text" class="fi" id="loginMgrName" placeholder="Nhập tên tài khoản..."
+            oninput="onMgrNameInput(this.value)" autocomplete="off">
+        </div>
+      </div>
+      <div id="pinSection" style="display:none">
+        <div class="fl" style="justify-content:center;margin-bottom:4px" id="pinLabel">Nhập mã PIN</div>
+        <div class="pin-disp" id="pinDisp">
+          <div class="pd" id="pd0"></div><div class="pd" id="pd1"></div>
+          <div class="pd" id="pd2"></div><div class="pd" id="pd3"></div>
+        </div>
+        <div class="pin-pad">
+          <button class="pk" onclick="pk('1')">1</button><button class="pk" onclick="pk('2')">2</button><button class="pk" onclick="pk('3')">3</button>
+          <button class="pk" onclick="pk('4')">4</button><button class="pk" onclick="pk('5')">5</button><button class="pk" onclick="pk('6')">6</button>
+          <button class="pk" onclick="pk('7')">7</button><button class="pk" onclick="pk('8')">8</button><button class="pk" onclick="pk('9')">9</button>
+          <button class="pk emp"></button><button class="pk" onclick="pk('0')">0</button><button class="pk" onclick="pk('del')">⌫</button>
+        </div>
+        <div id="lockoutMsg" style="display:none;text-align:center;margin-top:10px;padding:8px 12px;background:#fef2f2;border-radius:8px;color:var(--err);font-size:13px;font-weight:600"></div>
+        <div id="pinErr" style="color:var(--err);font-size:13px;text-align:center;margin-top:10px;display:none"></div>
+      </div>
+      <div id="loginStatus" style="margin-top:12px;font-size:13px;text-align:center;color:var(--t3)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="appShell" style="display:none">
+  <div class="hdr">
+    <div class="hdr-l">
+      <div class="hdr-title" id="hdrTitle">Báo Cáo Ngày</div>
+      <div class="hdr-sub" id="hdrSub"></div>
+    </div>
+    <div class="hdr-r">
+      <div class="hic" id="syncBtn" onclick="manualSync()" title="Đồng bộ">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- KTV: HOME -->
+    <div id="screen-home" class="screen active">
+      <div id="syncBanner" style="display:none"></div>
+      <div id="missBanner" style="display:none"></div>
+      <div id="doneBanner" style="display:none"></div>
+      <div class="dbanner">
+        <div class="db-day" id="dbDay"></div>
+        <div class="db-date" id="dbDate"></div>
+        <div class="db-hi" id="dbHi"></div>
+        <div class="db-sub" id="dbSub"></div>
+      </div>
+      <button class="qbtn" onclick="startNewBCN()">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Tạo Báo Cáo Hôm Nay
+      </button>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-n" id="stToday">0</div><div class="stat-l">Hôm nay</div></div>
+        <div class="stat-card"><div class="stat-n" id="stMonth">0</div><div class="stat-l">Tháng này</div></div>
+      </div>
+      <div class="sec-title">Báo cáo gần đây</div>
+      <div id="recentList"></div>
+    </div>
+
+    <!-- KTV: DANH SÁCH -->
+    <div id="screen-list" class="screen">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Tìm tên khách hàng, mã máy, mã BCN..." id="searchInp" oninput="debounceSearchKTV()">
+      </div>
+      <!-- Banner gợi ý tìm theo mã máy -->
+      <div id="crossSearchBanner" style="display:none"></div>
+      <div class="chip-grp">
+        <div class="chip active" onclick="setTab('all',this)">Tất cả</div>
+        <div class="chip" onclick="setTab('today',this)">Hôm nay</div>
+        <div class="chip" onclick="setTab('week',this)">Tuần này</div>
+        <div class="chip" onclick="setTab('month',this)">Tháng này</div>
+      </div>
+      <div id="bcnList"></div>
+    </div>
+
+    <!-- KTV: FORM -->
+    <div id="screen-form" class="screen">
+      <div id="editIndicator" style="display:none" class="edit-indicator">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        <span id="editIndicatorText">Đang sửa báo cáo</span>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="ct-dot"></span>Thông tin báo cáo</div>
+        <div class="fg"><label class="fl">Số BCN</label><input type="text" class="fi" id="fSo" readonly></div>
+        <div class="fg">
+          <label class="fl">Ngày <span class="req">*</span></label>
+          <input type="text" class="fi date-locked" id="fNgayDisplay" readonly placeholder="Ngày báo cáo">
+          <input type="hidden" id="fNgay">
+        </div>
+        <div class="fg"><label class="fl">Kỹ thuật viên</label><input type="text" class="fi" id="fKTV" readonly></div>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="ct-dot"></span>Chi tiết công việc</div>
+        <div id="cvList"></div>
+        <button class="add-cv-btn" onclick="openCVModal(-1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18"><path d="M12 5v14M5 12h14"/></svg>
+          Thêm công việc
+        </button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-s" onclick="goHome()">← Hủy</button>
+        <button class="btn btn-p" onclick="saveBCN()">💾 Lưu BCN</button>
+      </div>
+    </div>
+
+    <!-- KTV: DETAIL (BCN của mình) -->
+    <div id="screen-detail" class="screen">
+      <div id="detailContent"></div>
+    </div>
+
+    <!-- KTV: DETAIL BCN của KTV khác (cross-search, read-only) -->
+    <div id="screen-cross-detail" class="screen">
+      <div id="crossDetailContent"></div>
+    </div>
+
+    <!-- ADMIN: DASHBOARD -->
+    <div id="screen-admin-dash" class="screen">
+      <div id="adminSyncBanner" style="display:none"></div>
+      <div class="admin-banner">
+        <div class="ab-label">👑 Admin Dashboard</div>
+        <div class="ab-title" id="adTitle">Tổng quan</div>
+        <div class="ab-sub" id="adSub"></div>
+      </div>
+      <div id="adMissBanner" style="display:none"></div>
+      <div class="stat-grid col3">
+        <div class="stat-card"><div class="stat-n purple" id="adTotal">0</div><div class="stat-l">Tổng BCN</div></div>
+        <div class="stat-card"><div class="stat-n green" id="adDone">0</div><div class="stat-l">Hoàn thành</div></div>
+        <div class="stat-card"><div class="stat-n orange" id="adPending">0</div><div class="stat-l">Chưa xong</div></div>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="ct-dot" style="background:#7c3aed"></span>BCN theo KTV (tháng này)</div>
+        <div id="ktvChart"></div>
+      </div>
+      <div class="sec-title">Hoạt động hôm nay</div>
+      <div id="adTodayList"></div>
+    </div>
+
+    <!-- ADMIN: TẤT CẢ BCN -->
+    <div id="screen-admin-list" class="screen">
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Tìm BCN, KTV, khách hàng..." id="adSearchInp" oninput="debounceSearchAdmin()">
+      </div>
+      <div class="ktv-filter" id="ktvFilterChips"></div>
+      <div class="chip-grp">
+        <div class="chip active" onclick="setAdTab('all',this)">Tất cả</div>
+        <div class="chip" onclick="setAdTab('today',this)">Hôm nay</div>
+        <div class="chip" onclick="setAdTab('week',this)">Tuần này</div>
+        <div class="chip" onclick="setAdTab('month',this)">Tháng này</div>
+      </div>
+      <div id="adBcnList"></div>
+    </div>
+
+    <!-- ADMIN: DETAIL -->
+    <div id="screen-admin-detail" class="screen">
+      <div id="adDetailContent"></div>
+    </div>
+
+    <!-- BOSS: DASHBOARD -->
+    <div id="screen-boss-dash" class="screen">
+      <div id="bossSyncBanner" style="display:none"></div>
+      <div class="admin-banner" style="background:linear-gradient(135deg,#0f766e,#0e7490)">
+        <div class="ab-label">👔 Tổng Giám Đốc</div>
+        <div class="ab-title" id="bossTitle">Tổng quan</div>
+        <div class="ab-sub" id="bossSub"></div>
+      </div>
+      <div id="bossMissBanner" style="display:none"></div>
+      <div class="stat-grid col3">
+        <div class="stat-card"><div class="stat-n" style="color:#0f766e" id="bTotal">0</div><div class="stat-l">Tổng BCN</div></div>
+        <div class="stat-card"><div class="stat-n green" id="bDone">0</div><div class="stat-l">Hoàn thành</div></div>
+        <div class="stat-card"><div class="stat-n orange" id="bPending">0</div><div class="stat-l">Chưa xong</div></div>
+      </div>
+      <div class="card">
+        <div class="ct"><span class="ct-dot" style="background:#0f766e"></span>BCN theo KTV (tháng này)</div>
+        <div id="bossKtvChart"></div>
+      </div>
+      <div class="sec-title">Hoạt động hôm nay</div>
+      <div id="bossTodayList"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="screen-settings" class="screen">
+      <div id="settingsAdmin" style="display:none">
+        <div class="chip-grp" style="margin-bottom:16px;position:sticky;top:calc(var(--hh) + env(safe-area-inset-top));z-index:90;background:var(--bg);padding:8px 0">
+          <div class="chip active" id="subtab-ktv" onclick="switchAdminSubtab('ktv')">👥 Nhân sự</div>
+          <div class="chip" id="subtab-dm" onclick="switchAdminSubtab('dm')">📋 Danh mục</div>
+          <div class="chip" id="subtab-sec" onclick="switchAdminSubtab('sec')">🛡️ Bảo mật</div>
+          <div class="chip" id="subtab-sys" onclick="switchAdminSubtab('sys')">🔌 Hệ thống</div>
+        </div>
+        <div id="sec-admin-ktv" class="admin-subtab-section">
+          <div class="sec-title">Danh sách Kỹ thuật viên</div>
+          <div class="card">
+            <div id="ktvList"></div>
+            <div class="divider"></div>
+            <div class="fg"><label class="fl">Tên KTV mới</label><input type="text" class="fi" id="newKTVName" placeholder="Họ và tên"></div>
+            <div class="fg"><label class="fl">PIN (4 số)</label><input type="tel" class="fi" id="newKTVPin" placeholder="1234" maxlength="4"></div>
+            <div class="fg">
+              <label class="fl">Ghi chú</label>
+              <input type="text" class="fi" id="newKTVGhiChu" placeholder="Để trống = KTV thường · 'test' = tài khoản thử nghiệm">
+            </div>
+            <button class="btn btn-ok" onclick="addKTV()">+ Thêm KTV mới</button>
+          </div>
+        </div>
+        <div id="sec-admin-dm" class="admin-subtab-section" style="display:none">
+          <div class="sec-title">Quản lý danh mục (Dropdowns)</div>
+          <div class="card">
+            <div class="fg">
+              <label class="fl">Chọn loại danh mục</label>
+              <select class="fsel" id="adminDmSelect" onchange="renderAdminDmPanel()">
+                <option value="LoaiViec">⚙️ Loại công việc</option>
+                <option value="LoaiThietBi">💻 Loại thiết bị</option>
+                <option value="ThoiGian">⏰ Thời gian</option>
+                <option value="PhongKhuVuc">📍 Phòng/Khu vực</option>
+                <option value="CapDoUuTien">⚡ Cấp độ ưu tiên</option>
+                <option value="KetQua">🏁 Kết quả</option>
+                <option value="GhiChuMau">📝 Ghi chú mẫu</option>
+                <option value="NgayLe">🎌 Ngày lễ (MM-DD hoặc YYYY-MM-DD)</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">Thêm giá trị mới</label>
+              <div style="display:flex;gap:8px">
+                <input type="text" class="fi" id="adminDmNewValue" placeholder="Nhập giá trị mới...">
+                <button class="btn btn-ok" style="width:100px;padding:11px" onclick="addDmValue()">Thêm</button>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <label class="fl">Danh sách giá trị hiện tại</label>
+            <div id="adminDmList" style="max-height:260px;overflow-y:auto;margin-top:8px"></div>
+          </div>
+        </div>
+        <div id="sec-admin-sec" class="admin-subtab-section" style="display:none">
+          <div class="sec-title">Cấu hình Lockout đăng nhập</div>
+          <div class="card">
+            <div class="fg">
+              <label class="fl">Số lần nhập sai tối đa</label>
+              <div class="ctr-wrap">
+                <button class="ctr-btn" onclick="adjSecCfg('maxAttempts',-1)">−</button>
+                <input type="number" class="ctr-val" id="secMaxAttempts" value="5" min="1" max="20" readonly>
+                <button class="ctr-btn" onclick="adjSecCfg('maxAttempts',1)">+</button>
+              </div>
+            </div>
+            <div class="fg">
+              <label class="fl">Thời gian khóa (phút)</label>
+              <div class="ctr-wrap">
+                <button class="ctr-btn" onclick="adjSecCfg('lockMinutes',-1)">−</button>
+                <input type="number" class="ctr-val" id="secLockMinutes" value="5" min="1" max="60" readonly>
+                <button class="ctr-btn" onclick="adjSecCfg('lockMinutes',1)">+</button>
+              </div>
+            </div>
+            <button class="btn btn-p" style="margin-top:4px" onclick="saveSecCfg()">💾 Lưu cài đặt bảo mật</button>
+          </div>
+          <div class="sec-title">Thay đổi mã PIN Admin</div>
+          <div class="card">
+            <div class="fg"><label class="fl">PIN hiện tại <span class="req">*</span></label><input type="tel" class="fi" id="adPinOld" placeholder="Nhập PIN cũ" maxlength="4"></div>
+            <div class="fg"><label class="fl">PIN mới <span class="req">*</span></label><input type="tel" class="fi" id="adPinNew" placeholder="4 chữ số" maxlength="4"></div>
+            <div class="fg"><label class="fl">Xác nhận PIN mới <span class="req">*</span></label><input type="tel" class="fi" id="adPinConfirm" placeholder="Nhập lại PIN mới" maxlength="4"></div>
+            <button class="btn btn-p" onclick="changePINGeneric('adPinOld','adPinNew','adPinConfirm')">🔑 Xác nhận đổi mã PIN</button>
+          </div>
+        </div>
+        <div id="sec-admin-sys" class="admin-subtab-section" style="display:none">
+          <div class="sec-title">Thông tin kết nối</div>
+          <div class="card">
+            <div class="info-row" style="padding:8px 0"><div class="ik">Supabase URL</div><div class="iv" style="font-size:11px;color:var(--t3)" id="urlDisplay">–</div></div>
+            <div style="margin-top:12px"><button class="btn btn-s" onclick="testConn()">🔍 Kiểm tra kết nối Database</button></div>
+          </div>
+          <div class="sec-title">Tài khoản Admin</div>
+          <div class="card">
+            <div class="sr" onclick="logout()">
+              <div class="sr-l"><div class="srl" style="color:var(--err)">Đăng xuất Admin</div><div class="srd">Quay về màn hình chọn KTV</div></div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" width="18" height="18"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="settingsBoss" style="display:none">
+        <div class="sec-title">Đổi mã PIN</div>
+        <div class="card">
+          <div class="fg"><label class="fl">PIN hiện tại <span class="req">*</span></label><input type="tel" class="fi" id="bPinOld" placeholder="Nhập PIN cũ" maxlength="4"></div>
+          <div class="fg"><label class="fl">PIN mới <span class="req">*</span></label><input type="tel" class="fi" id="bPinNew" placeholder="4 chữ số" maxlength="4"></div>
+          <div class="fg"><label class="fl">Xác nhận PIN mới <span class="req">*</span></label><input type="tel" class="fi" id="bPinConfirm" placeholder="Nhập lại PIN mới" maxlength="4"></div>
+          <button class="btn btn-p" onclick="changePINGeneric('bPinOld','bPinNew','bPinConfirm')">🔑 Đổi mã PIN</button>
+        </div>
+      </div>
+
+      <div id="settingsKTV" style="display:none">
+        <div class="sec-title">Đổi mã PIN</div>
+        <div class="card">
+          <div class="fg"><label class="fl">PIN hiện tại <span class="req">*</span></label><input type="tel" class="fi" id="pinOld" placeholder="Nhập PIN cũ" maxlength="4"></div>
+          <div class="fg"><label class="fl">PIN mới <span class="req">*</span></label><input type="tel" class="fi" id="pinNew" placeholder="4 chữ số" maxlength="4"></div>
+          <div class="fg"><label class="fl">Xác nhận PIN mới <span class="req">*</span></label><input type="tel" class="fi" id="pinConfirm" placeholder="Nhập lại PIN mới" maxlength="4"></div>
+          <button class="btn btn-p" onclick="changePINGeneric('pinOld','pinNew','pinConfirm')">🔑 Đổi mã PIN</button>
+        </div>
+      </div>
+
+      <div id="logoutCommonWrap">
+        <div class="sec-title">Tài khoản</div>
+        <div class="card">
+          <div class="sr" onclick="logout()">
+            <div class="sr-l"><div class="srl" style="color:var(--err)">Đăng xuất</div><div class="srd">Quay về màn hình chọn KTV</div></div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" width="18" height="18"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+        </div>
+      </div>
+      <div style="height:16px"></div>
+    </div>
+
+  </div>
+
+  <nav class="bnav" id="bottomNav"></nav>
+</div>
+
+<!-- PRINT AREA -->
+<div id="printArea" style="display:none"></div>
+
+<!-- MODAL CÔNG VIỆC -->
+<div class="mover" id="modalCV">
+  <div class="msheet">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="mCVTitle">Thêm công việc</div>
+    <div class="fg">
+      <label class="fl">Khách hàng <span class="req">*</span></label>
+      <div class="kh-wrap" id="khWrap">
+        <input type="text" class="kh-input" id="cv_khSearch" placeholder="Tìm theo mã hoặc tên khách..."
+          autocomplete="off" oninput="filterKH(this.value)" onfocus="openKHDrop()" onblur="setTimeout(closeKHDrop,200)">
+        <div class="kh-drop" id="khDrop"></div>
+      </div>
+      <input type="hidden" id="cv_khachHang">
+    </div>
+    <div class="fg"><label class="fl">Loại công việc <span class="req">*</span></label>
+      <select class="fsel empty" id="cv_loaiViec" onchange="this.classList.remove('empty')"><option value="">-- Chọn --</option></select></div>
+    <div class="fg">
+      <label class="fl">Model máy</label>
+      <input type="text" class="fi" id="cv_model" readonly placeholder="Tự động từ tên Khách hàng" style="background:var(--sur2);color:var(--t2)">
+    </div>
+    <div class="fg">
+      <label class="fl">Thời gian <span class="req">*</span></label>
+      <div class="tg-group">
+        <button class="tg-btn sang" id="tgSang" onclick="setTG('SÁNG')">🌅 SÁNG</button>
+        <button class="tg-btn chieu" id="tgChieu" onclick="setTG('CHIỀU')">🌆 CHIỀU</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Số lượng / Lần</label>
+      <div class="ctr-wrap">
+        <button class="ctr-btn" onclick="adjCtr('cv_soLuong',-1)">−</button>
+        <input type="number" class="ctr-val" id="cv_soLuong" value="1" min="1">
+        <button class="ctr-btn" onclick="adjCtr('cv_soLuong',1)">+</button>
+      </div></div>
+    <div class="fg"><label class="fl">Counter máy</label>
+      <div class="ctr-wrap">
+        <button class="ctr-btn" onclick="adjCtr('cv_counter',-1)">−</button>
+        <input type="number" class="ctr-val" id="cv_counter" value="0" min="0">
+        <button class="ctr-btn" onclick="adjCtr('cv_counter',1)">+</button>
+      </div></div>
+    <div class="fg"><label class="fl">Kết quả <span class="req">*</span></label>
+      <select class="fsel empty" id="cv_ketQua" onchange="this.classList.remove('empty')"><option value="">-- Chọn --</option></select></div>
+    <div class="fg">
+      <label class="fl">Ghi chú khác</label>
+      <input type="text" class="fi" id="cv_ghiChu" placeholder="Ghi chú khác...">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-s" onclick="closeMCV()">Hủy</button>
+      <button class="btn btn-p" onclick="confirmCV()">✓ Lưu công việc</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="cdlg-over" id="cdlgOver">
+  <div class="cdlg">
+    <div class="cdlg-icon" id="cdlgIcon">❓</div>
+    <div class="cdlg-title" id="cdlgTitle">Xác nhận</div>
+    <div class="cdlg-msg" id="cdlgMsg"></div>
+    <div class="cdlg-btns">
+      <button class="btn cdlg-cancel" id="cdlgCancelBtn" onclick="cdlgResolve(false)">Hủy</button>
+      <button class="btn cdlg-ok" id="cdlgOkBtn" onclick="cdlgResolve(true)">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<div class="ldov" id="ldov"><div class="spinner"></div><div class="ldtxt" id="ldtxt">Đang xử lý...</div></div>
+<div class="toast" id="toast"></div>
+
+    <script>window.addEventListener("error", e => window.bootError = e.message + " at " + e.filename + ":" + e.lineno);</script><script type="module" src="js/main.js"></script>
+</body>
+</html>

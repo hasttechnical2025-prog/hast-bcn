@@ -1,0 +1,22 @@
+:root {
+  --p: #1a56db;
+  --pd: #1044b5;
+  --pl: #e8efff;
+  --acc: #0ea5e9;
+  --ok: #10b981;
+  --warn: #f59e0b;
+  --err: #ef4444;
+  --bg: #f0f4ff;
+  --sur: #fff;
+  --sur2: #f8faff;
+  --bdr: #e2e8f8;
+  --t1: #1e2a4a;
+  --t2: #64748b;
+  --t3: #94a3b8;
+  --r: 16px;
+  --rs: 10px;
+  --sh: 0 4px 24px rgba(26, 86, 219, .10);
+  --shl: 0 8px 40px rgba(26, 86, 219, .18);
+  --hh: 60px;
+  --bh: 64px;
+}
