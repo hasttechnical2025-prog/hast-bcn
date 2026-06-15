@@ -36,7 +36,7 @@ body {
 @media print {
   @page { size: A4 portrait; margin: 10mm; }
   body { background: #fff !important; color: #000; overflow: visible; font-family: 'Times New Roman', serif; }
-  .hdr, .bnav, #loginScreen, #appShell .main > .screen, #cdlgOver, #toast, #ldov { display: none !important; }
+  .hdr, .bnav, #loginScreen, #appShell, #cdlgOver, #toast, #ldov, .mover { display: none !important; }
   #printArea { display: block !important; position: static; visibility: visible; width: 100%; }
   .p-dept { font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 8px; }
   .p-title { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 10px; }
