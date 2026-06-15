@@ -14,7 +14,7 @@ export function printBCN(id) {
   const dYear = dateObj.getFullYear();
 
   let rowsHtml = '';
-  const maxRows = 12;
+  const maxRows = 10;
   const listLen = r.chiTiet ? r.chiTiet.length : 0;
 
   if (listLen > 0) {
@@ -42,11 +42,9 @@ export function printBCN(id) {
   }
 
   printArea.innerHTML = `
-    <div class="p-header">
-      <div class="p-logo"><img src="./logo.png" style="width:100%;height:auto;display:block;object-fit:contain"></div>
-      <div class="p-contact">Website: http://www.sieuthanh.com.vn<br>Tel: (84-24) 38223888<br>Trụ sở: 5 Nguyễn Ngọc Vũ, Phường Trung Hòa, Quận Cầu Giấy, Hà Nội</div>
+    <div style="text-align:center; margin-bottom: 15px;">
+      <img src="./letterhead.png" style="width:100%; max-width:800px; height:auto; display:block; margin: 0 auto; object-fit:contain;">
     </div>
-    <div class="p-line"></div>
     <div class="p-dept">PHÒNG KỸ THUẬT</div>
     <div class="p-title">BÁO CÁO NHÂN VIÊN</div>
     <table class="p-info">
