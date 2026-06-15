@@ -46,10 +46,3 @@ export function debounceSearchAdmin() {
   adSearchTimeout = setTimeout(() => renderAdminList(), 400);
 }
 window.debounceSearchAdmin = debounceSearchAdmin;
-
-let ktvSearchTimeout = null;
-export function debounceSearchKTV() {
-  // debounceSearchKTV is used in ktvList screen, but since it's an inline bound event,
-  // we can resolve it by importing renderKTVList dynamically or placing it here.
-  // Wait, let's put it in ktvList.js. I'll add it there later if needed, or define it here.
-}

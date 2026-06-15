@@ -167,3 +167,10 @@ export function viewCrossBCN(id) {
 window.setTab = setTab;
 window.viewCrossBCN = viewCrossBCN;
 window.renderKTVList = renderKTVList;
+
+let ktvSearchTimeout = null;
+export function debounceSearchKTV() {
+  clearTimeout(ktvSearchTimeout);
+  ktvSearchTimeout = setTimeout(() => renderKTVList(), 400);
+}
+window.debounceSearchKTV = debounceSearchKTV;
