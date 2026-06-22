@@ -99,6 +99,12 @@ export async function saveBCN() {
   }
 
   const ngay = document.getElementById('fNgay').value;
+  const closingDate = S.secCfg?.closingDate || '';
+  if (!S.isAdmin && closingDate && ngay <= closingDate) {
+    toast('Ngày này đã khóa sổ, không thể thêm/sửa báo cáo!', 'err');
+    return;
+  }
+
   const isEdit = S.editingBCNId !== null;
   const my = S.records.filter(r => r.ktv === S.user);
   const dupRec = my.find(r => normDate(r.ngay) === normDate(ngay) && r.id !== S.editingBCNId);

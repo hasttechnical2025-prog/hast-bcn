@@ -31,7 +31,7 @@ export const S = {
   ktvList: [],
   danhMuc: {},
   ngayLe: [],
-  secCfg: { maxAttempts: 5, lockMinutes: 5 },
+  secCfg: { maxAttempts: 5, lockMinutes: 5, closingDate: '' },
   tmpCV: [],
   editIdx: -1,
   tabMode: 'all',

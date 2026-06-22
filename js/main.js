@@ -157,6 +157,15 @@ export function viewBCN(id, targetScreen) {
 }
 
 export async function delBCN(id) {
+  const r = S.records.find(x => x.id === id);
+  if (!r) return;
+
+  const closingDate = S.secCfg?.closingDate || '';
+  if (!S.isAdmin && closingDate && normDate(r.ngay) <= closingDate) {
+    toast('Ngày này đã khóa sổ, không thể xóa!', 'err');
+    return;
+  }
+
   const ok = await showConfirm({
     title: 'Xóa báo cáo?',
     msg: 'Báo cáo sẽ bị xóa vĩnh viễn khỏi hệ thống. Không thể khôi phục.',
@@ -222,7 +231,8 @@ export async function appInit() {
       cfg.forEach(c => m[c.key] = c.value);
       S.secCfg = {
         maxAttempts: parseInt(m['max_failed_attempts'] || 5),
-        lockMinutes: parseInt(m['lockout_duration_minutes'] || 5)
+        lockMinutes: parseInt(m['lockout_duration_minutes'] || 5),
+        closingDate: m['closing_date'] || ''
       };
     }
     populateLoginKTV();

@@ -230,6 +230,8 @@ export async function loginOK(name) {
     document.getElementById('urlDisplay').textContent = SUPABASE_URL.slice(0, 50) + '...';
     document.getElementById('secMaxAttempts').value = S.secCfg.maxAttempts;
     document.getElementById('secLockMinutes').value = S.secCfg.lockMinutes;
+    const lDate = document.getElementById('secLockoutDate');
+    if (lDate) lDate.value = S.secCfg.closingDate;
   }
 
   buildNav();

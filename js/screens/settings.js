@@ -249,15 +249,19 @@ export function adjSecCfg(key, d) {
 }
 
 export async function saveSecCfg() {
+  const lDateVal = document.getElementById('secLockoutDate')?.value || '';
   showLD('Đang lưu...');
   try {
     const { error: e1 } = await sb.from(TB_CFG).update({ value: String(S.secCfg.maxAttempts) }).eq('key', 'max_failed_attempts');
     if (e1) throw e1;
     const { error: e2 } = await sb.from(TB_CFG).update({ value: String(S.secCfg.lockMinutes) }).eq('key', 'lockout_duration_minutes');
     if (e2) throw e2;
+    const { error: e3 } = await sb.from(TB_CFG).upsert({ key: 'closing_date', value: lDateVal });
+    if (e3) throw e3;
+    S.secCfg.closingDate = lDateVal;
 
     hideLD();
-    toast('Đã lưu cài đặt bảo mật lên database', 'ok2');
+    toast('Đã lưu cài đặt bảo mật & khóa sổ', 'ok2');
   } catch (e) {
     hideLD();
     toast('Lỗi: ' + e.message, 'err');

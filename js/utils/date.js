@@ -51,14 +51,19 @@ export function getKtvMissingWorkdays(ktvName) {
   const today = dateStr(now);
   const dow = now.getDay();
   const monday = new Date(now);
-  monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1));
+  monday.setDate(now.getDate() - (dow === 0 ? 6 : dow - 1) - 7);
+
   const doneDates = new Set(S.records.filter(r => r.ktv === ktvName).map(r => normDate(r.ngay)));
   const missing = [];
   const cursor = new Date(monday);
+  const closingDate = S.secCfg?.closingDate || '';
+
   while (dateStr(cursor) <= today) {
     const ds = dateStr(cursor);
     const day = cursor.getDay();
-    if (day !== 0 && day !== 6 && !isHoliday(ds) && !doneDates.has(ds) && ds !== today) {
+    const isLocked = closingDate && ds <= closingDate;
+
+    if (!isLocked && day !== 0 && day !== 6 && !isHoliday(ds) && !doneDates.has(ds) && ds !== today) {
       missing.push(ds);
     }
     cursor.setDate(cursor.getDate() + 1);
