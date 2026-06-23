@@ -135,7 +135,17 @@ export function openCVModal(idx) {
     if (ghiChu) ghiChu.value = cv.ghiChu || '';
   }
   const modal = document.getElementById('modalCV');
-  if (modal) modal.classList.add('open');
+  if (modal) {
+    modal.classList.add('open');
+    setTimeout(() => {
+      if (khSearch) {
+        khSearch.focus();
+        const val = khSearch.value;
+        khSearch.value = '';
+        khSearch.value = val;
+      }
+    }, 350);
+  }
 }
 
 export function closeMCV() {

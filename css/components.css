@@ -63,7 +63,7 @@
 }
 
 .db-hi {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   margin-top: 10px;
 }
@@ -323,7 +323,7 @@
 }
 
 .ktv-name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -367,7 +367,7 @@
   border: 1.5px solid var(--bdr);
   border-radius: var(--rs);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--t1);
   background: var(--sur);
   outline: none;
@@ -401,7 +401,7 @@
   border: 1.5px solid var(--bdr);
   border-radius: var(--rs);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--t1);
   background: var(--sur);
   outline: none;
@@ -470,7 +470,7 @@
   border: none;
   border-radius: var(--rs);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -527,7 +527,7 @@
   padding: 16px;
   width: 100%;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -947,7 +947,7 @@
 }
 
 .srl {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -1046,7 +1046,7 @@
   border: none;
   outline: none;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   background: transparent;
   color: var(--t1);
 }
@@ -1335,7 +1335,7 @@
   border: 1.5px solid var(--bdr);
   border-radius: var(--rs);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--t1);
   background: var(--sur);
   outline: none;
