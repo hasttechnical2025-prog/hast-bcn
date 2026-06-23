@@ -262,6 +262,11 @@ export async function saveSecCfg() {
 
     hideLD();
     toast('Đã lưu cài đặt bảo mật & khóa sổ', 'ok2');
+
+    // Refresh Admin Dash to apply the new closingDate to the miss banner
+    if (window.refreshAdminDash) {
+      window.refreshAdminDash();
+    }
   } catch (e) {
     hideLD();
     toast('Lỗi: ' + e.message, 'err');

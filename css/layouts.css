@@ -96,7 +96,7 @@
   gap: 3px;
   cursor: pointer;
   color: var(--t3);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   padding-bottom: 4px;
   transition: .2s;
@@ -107,8 +107,8 @@
 }
 
 .ni svg {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   stroke: currentColor;
   fill: none;
   stroke-width: 2;
@@ -127,4 +127,14 @@
 
 .screen.active {
   display: block;
+}
+
+/* IOS / NOTCH / SAFE AREA INS OVERRIDES */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .hdr { padding-top: env(safe-area-inset-top); height: calc(var(--hh) + env(safe-area-inset-top)); }
+  .main { padding-top: calc(var(--hh) + env(safe-area-inset-top) + 12px); }
+  .bnav { padding-bottom: env(safe-area-inset-bottom); height: calc(var(--bh) + env(safe-area-inset-bottom)); }
+  .main { padding-bottom: calc(var(--bh) + env(safe-area-inset-bottom) + 12px); }
+  .msheet { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+  .toast { bottom: calc(var(--bh) + env(safe-area-inset-bottom) + 12px); }
 }

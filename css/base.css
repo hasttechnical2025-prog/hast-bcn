@@ -18,15 +18,6 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-@supports (padding-top: env(safe-area-inset-top)) {
-  .hdr { padding-top: env(safe-area-inset-top); height: calc(var(--hh) + env(safe-area-inset-top)); }
-  .main { padding-top: calc(var(--hh) + env(safe-area-inset-top) + 12px); }
-  .bnav { padding-bottom: env(safe-area-inset-bottom); height: calc(var(--bh) + env(safe-area-inset-bottom)); }
-  .main { padding-bottom: calc(var(--bh) + env(safe-area-inset-bottom) + 12px); }
-  .msheet { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
-  .toast { bottom: calc(var(--bh) + env(safe-area-inset-bottom) + 12px); }
-}
-
 @keyframes scaleIn { from { transform: scale(.85); opacity: 0 } to { transform: scale(1); opacity: 1 } }
 @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
 @keyframes slideUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
