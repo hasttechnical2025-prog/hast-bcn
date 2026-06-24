@@ -135,6 +135,8 @@ export function viewBCN(id, targetScreen) {
     </div>`).join('');
 
   const backTarget = isAd ? 'admin-list' : 'list';
+  const closingDate = S.secCfg?.closingDate || '';
+  const isLocked = !S.isAdmin && closingDate && normDate(r.ngay) <= closingDate;
   const html = `
     <div class="dh ${isAd ? 'purple' : 'blue'}">
       <div class="dh-so">${r.so}</div>
@@ -148,7 +150,7 @@ export function viewBCN(id, targetScreen) {
     <div class="btn-row">
       <button class="btn btn-s" onclick="showScreen('${backTarget}')">← Quay lại</button>
       <button class="btn btn-ok" onclick="printBCN('${r.id}')" style="flex:1">🖨️ Xuất PDF</button>
-      ${!isAd ? `<button class="btn btn-s" onclick="openFormEdit('${r.id}')" style="flex:0.6;padding:10px 4px;font-size:13px">Sửa</button><button class="btn btn-d" onclick="delBCN('${r.id}')" style="flex:0.6;padding:10px 4px;font-size:13px">Xóa</button>` : ''}
+      ${!isAd && !isLocked ? `<button class="btn btn-s" onclick="openFormEdit('${r.id}')" style="flex:0.6;padding:10px 4px;font-size:13px">Sửa</button><button class="btn btn-d" onclick="delBCN('${r.id}')" style="flex:0.6;padding:10px 4px;font-size:13px">Xóa</button>` : ''}
     </div>`;
 
   const container = document.getElementById(isAd ? 'adDetailContent' : 'detailContent');
