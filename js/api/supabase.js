@@ -68,6 +68,17 @@ export async function syncAll(silent = false) {
     S.danhMuc = dmMap;
     S.ngayLe = dmMap['NgayLe'] || [];
 
+    const { data: cfg, error: eConfig } = await sb.from(TB_CFG).select('key,value');
+    if (!eConfig && cfg) {
+      const m = {};
+      cfg.forEach(c => m[c.key] = c.value);
+      S.secCfg = {
+        maxAttempts: parseInt(m['max_failed_attempts'] || 5),
+        lockMinutes: parseInt(m['lockout_duration_minutes'] || 5),
+        closingDate: m['closing_date'] || ''
+      };
+    }
+
     populateLoginKTV();
     populateAllDropdowns();
 
