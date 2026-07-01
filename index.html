@@ -204,12 +204,20 @@
         <svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input type="text" placeholder="Tìm BCN, KTV, khách hàng..." id="adSearchInp" oninput="debounceSearchAdmin()">
       </div>
-      <div class="ktv-filter" id="ktvFilterChips"></div>
-      <div class="chip-grp">
-        <div class="chip active" onclick="setAdTab('all',this)">Tất cả</div>
-        <div class="chip" onclick="setAdTab('today',this)">Hôm nay</div>
-        <div class="chip" onclick="setAdTab('week',this)">Tuần này</div>
-        <div class="chip" onclick="setAdTab('month',this)">Tháng này</div>
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <div style="flex:1;">
+          <select class="fsel" id="adKtvFilterSelect" onchange="setKtvFilter(this.value)">
+            <option value="all">Tất cả KTV</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <select class="fsel" id="adTimeFilterSelect" onchange="setAdTab(this.value)">
+            <option value="all">Tất cả</option>
+            <option value="today">Hôm nay</option>
+            <option value="week">Tuần này</option>
+            <option value="month">Tháng này</option>
+          </select>
+        </div>
       </div>
       <div id="adBcnList"></div>
     </div>

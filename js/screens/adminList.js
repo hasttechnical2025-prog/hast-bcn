@@ -4,23 +4,34 @@ import { emptyH } from '../utils/ui.js';
 
 export function setAdTab(tab, el) {
   S.adTabMode = tab;
-  document.querySelectorAll('#screen-admin-list .chip-grp .chip').forEach(c => c.classList.remove('active'));
-  if (el) el.classList.add('active');
+  const selectEl = document.getElementById('adTimeFilterSelect');
+  if (selectEl) selectEl.value = tab;
   renderAdminList();
 }
 
 export function setKtvFilter(ktv, el) {
   S.adKtvFilter = ktv;
+  const selectEl = document.getElementById('adKtvFilterSelect');
+  if (selectEl) selectEl.value = ktv;
   renderAdminList();
 }
 
 export function renderAdminList() {
   const ktvs = [...new Set(S.records.map(r => r.ktv))].filter(Boolean);
-  const ktvFilterChips = document.getElementById('ktvFilterChips');
-  if (ktvFilterChips) {
-    ktvFilterChips.innerHTML =
-      `<div class="chip ${S.adKtvFilter === 'all' ? 'active' : ''}" onclick="setKtvFilter('all', this)" style="${S.adKtvFilter === 'all' ? 'background:#7c3aed;color:#fff;border-color:#7c3aed' : ''}">Tất cả KTV</div>` +
-      ktvs.map(k => `<div class="chip ${S.adKtvFilter === k ? 'active' : ''}" onclick="setKtvFilter('${k}', this)" style="${S.adKtvFilter === k ? 'background:#7c3aed;color:#fff;border-color:#7c3aed' : ''}">${k}</div>`).join('');
+  const selectEl = document.getElementById('adKtvFilterSelect');
+
+  if (selectEl) {
+    const currentValue = S.adKtvFilter;
+    selectEl.innerHTML = `<option value="all">Tất cả KTV</option>` +
+      ktvs.map(k => `<option value="${k}">${k}</option>`).join('');
+
+    // Ensure the current value is valid, fallback to 'all'
+    if (currentValue === 'all' || ktvs.includes(currentValue)) {
+      selectEl.value = currentValue;
+    } else {
+      selectEl.value = 'all';
+      S.adKtvFilter = 'all';
+    }
   }
 
   let recs = S.adKtvFilter === 'all' ? S.records : S.records.filter(r => r.ktv === S.adKtvFilter);
