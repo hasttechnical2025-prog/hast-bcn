@@ -124,11 +124,13 @@
       </div>
       <!-- Banner gợi ý tìm theo mã máy -->
       <div id="crossSearchBanner" style="display:none"></div>
-      <div class="chip-grp">
-        <div class="chip active" onclick="setTab('all',this)">Tất cả</div>
-        <div class="chip" onclick="setTab('today',this)">Hôm nay</div>
-        <div class="chip" onclick="setTab('week',this)">Tuần này</div>
-        <div class="chip" onclick="setTab('month',this)">Tháng này</div>
+      <div style="margin-bottom:12px;">
+        <select class="fsel" id="ktvTimeFilterSelect" onchange="setTab(this.value)">
+          <option value="all">Thời gian: Tất cả</option>
+          <option value="today">Hôm nay</option>
+          <option value="week">Tuần này</option>
+          <option value="month">Tháng này</option>
+        </select>
       </div>
       <div id="bcnList"></div>
     </div>
@@ -252,11 +254,13 @@
     <!-- SETTINGS -->
     <div id="screen-settings" class="screen">
       <div id="settingsAdmin" style="display:none">
-        <div class="chip-grp" style="margin-bottom:16px;position:sticky;top:calc(var(--hh) + env(safe-area-inset-top));z-index:90;background:var(--bg);padding:8px 0">
-          <div class="chip active" id="subtab-ktv" onclick="switchAdminSubtab('ktv')">👥 Nhân sự</div>
-          <div class="chip" id="subtab-dm" onclick="switchAdminSubtab('dm')">📋 Danh mục</div>
-          <div class="chip" id="subtab-sec" onclick="switchAdminSubtab('sec')">🛡️ Bảo mật</div>
-          <div class="chip" id="subtab-sys" onclick="switchAdminSubtab('sys')">🔌 Hệ thống</div>
+        <div style="margin-bottom:16px;position:sticky;top:calc(var(--hh) + env(safe-area-inset-top));z-index:90;background:var(--bg);padding:8px 0">
+          <select class="fsel" id="adminSubtabSelect" onchange="switchAdminSubtab(this.value)">
+            <option value="ktv">👥 Nhân sự</option>
+            <option value="dm">📋 Danh mục</option>
+            <option value="sec">🛡️ Bảo mật</option>
+            <option value="sys">🔌 Hệ thống</option>
+          </select>
         </div>
         <div id="sec-admin-ktv" class="admin-subtab-section">
           <div class="sec-title">Danh sách Kỹ thuật viên</div>

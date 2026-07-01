@@ -8,9 +8,8 @@ import { populateAllDropdowns } from '../components/modal.js';
 import { initSupabase } from '../api/supabase.js';
 
 export function switchAdminSubtab(tabName) {
-  document.querySelectorAll('#settingsAdmin .chip-grp .chip').forEach(c => c.classList.remove('active'));
-  const subTab = document.getElementById('subtab-' + tabName);
-  if (subTab) subTab.classList.add('active');
+  const selectEl = document.getElementById('adminSubtabSelect');
+  if (selectEl) selectEl.value = tabName;
 
   document.querySelectorAll('.admin-subtab-section').forEach(sec => sec.style.display = 'none');
   const section = document.getElementById('sec-admin-' + tabName);

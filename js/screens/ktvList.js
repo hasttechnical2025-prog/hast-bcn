@@ -4,10 +4,10 @@ import { normDate, fmtStr } from '../utils/date.js';
 import { bcnHTML, filterRecs, showScreen } from '../main.js';
 import { printBCN } from '../components/print.js';
 
-export function setTab(tab, el) {
+export function setTab(tab) {
   S.tabMode = tab;
-  document.querySelectorAll('#screen-list .chip').forEach(c => c.classList.remove('active'));
-  if (el) el.classList.add('active');
+  const selectEl = document.getElementById('ktvTimeFilterSelect');
+  if (selectEl) selectEl.value = tab;
   renderKTVList();
 }
 
