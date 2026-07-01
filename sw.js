@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bcn-app-v8';
+const CACHE_NAME = 'bcn-app-v9';
 const ASSETS = [
   './',
   './index.html',
